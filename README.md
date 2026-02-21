@@ -222,16 +222,6 @@ batch_size: 10
 warm_start: 50
 ```
 
-## Citation
-
-```bibtex
-@inproceedings{anonymous2026price,
-  title={The Price of Fairness in Active Learning: Fundamental Limits and Optimal Label Acquisition},
-  author={Anonymous},
-  booktitle={Proceedings of the 32nd ACM SIGKDD Conference on Knowledge Discovery and Data Mining},
-  year={2026}
-}
-```
 
 ## License
 
