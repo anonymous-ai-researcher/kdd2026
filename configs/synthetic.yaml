@@ -1,0 +1,45 @@
+# Synthetic data experiments (Q1, Q2, Q4)
+# Uses exact theoretical constants for validation
+inherits: default.yaml
+
+fairness:
+  gamma: 0.05
+  delta: 0.10
+  epsilon: 0.05
+  notion: "EO"
+
+stopping_rule:
+  use_calibrated: false
+  theoretical_constant: 32
+
+synthetic:
+  n_pool: 500000
+  sigma: 0.5
+  sigma_eta: 0.0  # realizable setting
+
+# Q1: Scaling law sweep
+scaling:
+  baseline:
+    d: 10
+    k: 4
+    gamma: 0.05
+    p_plus: 0.25
+  sweeps:
+    d: [5, 10, 20, 40]
+    k: [2, 4, 8, 16]
+    gamma: [0.10, 0.05, 0.025, 0.0125]
+    p_plus: [0.50, 0.25, 0.10, 0.05]
+
+# Q2: Separation
+separation:
+  k: 4
+  gamma: 0.05
+  p_plus: 0.25
+  epsilon_values: [0.50, 0.20, 0.10, 0.05, 0.02]
+
+# Q4: Hierarchy
+hierarchy:
+  k: 9
+  p_plus: 0.25
+  gamma: 0.05
+  notions: ["DP", "EO", "EqOdds"]

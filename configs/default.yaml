@@ -1,0 +1,28 @@
+# Default experiment configuration
+fairness:
+  gamma: 0.10
+  delta: 0.10
+  epsilon: 0.05
+  notion: "EO"  # DP, EO, EqOdds
+
+stopping_rule:
+  use_calibrated: true
+  theoretical_constant: 32   # 32/gamma^2 for theoretical
+  calibrated_constant: 2     # 2/gamma^2 for calibrated
+
+model:
+  classifier: "logistic"
+  C: 1.0
+  solver: "lbfgs"
+  max_iter: 1000
+  tol: 1.0e-4
+
+active_learning:
+  batch_size: 10
+  warm_start: 50
+  candidate_subsample: 10000
+
+experiment:
+  seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  train_ratio: 0.8
+  output_dir: "results"

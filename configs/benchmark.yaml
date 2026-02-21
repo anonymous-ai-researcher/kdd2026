@@ -1,0 +1,38 @@
+# Real-data benchmark experiments (Q3)
+# Uses calibrated constants
+inherits: default.yaml
+
+fairness:
+  gamma: 0.10
+  delta: 0.10
+  notion: "EO"
+
+stopping_rule:
+  use_calibrated: true
+  calibrated_constant: 2
+
+datasets:
+  folktables:
+    budget: 45000
+    tau_acc_ratio: 0.95
+    full_data_acc: 0.825
+  compas:
+    budget: 5000
+    tau_acc_ratio: 0.95
+    full_data_acc: 0.671
+  adult:
+    budget: 23000
+    tau_acc_ratio: 0.95
+    full_data_acc: 0.852
+
+methods:
+  - "Unconstrained"
+  - "Passive-Fair"
+  - "Active-Fair"
+  - "FAL"
+  - "FairStratified"
+
+ablation:
+  phase1_ratios: [0.25, 0.50, 0.75, 1.0, 1.25, 1.50, 2.0]
+  pi_min_values: [0.01, 0.05, 0.10, 0.15, 0.20, 0.25]
+  p_plus_values: [0.01, 0.02, 0.05, 0.10, 0.15, 0.20, 0.30, 0.50]
