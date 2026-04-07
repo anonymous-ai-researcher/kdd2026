@@ -86,7 +86,6 @@ The complete experimental data is available in the [`supplementary/`](supplement
 
 - [`civil_comments_simulation_results.csv`](supplementary/civil_comments_simulation_results.csv) — Raw experimental data (1,400 rows: 7 budgets × 10 trials × 2 models × 2 k values)
 - [`civil_comments_simulation_results.png`](supplementary/civil_comments_simulation_results.png) — Four-panel visualization
-- [`civil_comments_simulation_results.pdf`](supplementary/civil_comments_simulation_results.pdf) — Publication-quality figure
 
 **CSV Schema:**
 
@@ -327,16 +326,6 @@ We compare against the following methods:
 
 *Note: PANDA (FAccT 2022) requires meta-learning infrastructure not included in this release. Falcon (VLDB 2024) was published after our submission.*
 
-## Citation
-
-```bibtex
-@inproceedings{anonymous2026fairness,
-  title={The Price of Fairness in Active Learning: Fundamental Limits and Optimal Label Acquisition},
-  author={Anonymous},
-  booktitle={Proceedings of the 32nd ACM SIGKDD Conference on Knowledge Discovery and Data Mining},
-  year={2026}
-}
-```
 
 ## License
 
