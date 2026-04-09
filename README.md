@@ -30,11 +30,15 @@ We present matching algorithms — **ConstrainedERM-DP** for DP and **FairStrati
 
 ---
 
-## 🆕 Extended Experiments (Rebuttal Supplement)
+> [!IMPORTANT]
+> ## 🆕 Extended Experiments (Rebuttal Supplement — Added April 2026)
+> The following experiments were conducted in response to reviewer feedback, validating our theoretical predictions on a **non-census healthcare domain** and **non-linear classifiers**.
 
-We provide additional experiments validating our theoretical predictions on a **non-census healthcare domain** and **non-linear classifiers**.
+---
 
-### Diabetes 130-Hospitals (Healthcare Domain)
+### 🏥 NEW: Diabetes 130-Hospitals (Healthcare Domain)
+
+[![New Experiment](https://img.shields.io/badge/🆕_New_Experiment-Healthcare_Domain-green)](supplementary/diabetes_results.json)
 
 We ran experiments on [Diabetes 130-US Hospitals](https://archive.ics.uci.edu/dataset/296/diabetes+130-us+hospitals+for+years+1999-2008) (Strack et al., BioMed Research International 2014), a standard fairness benchmark available via [Fairlearn](https://fairlearn.org/main/user_guide/datasets/diabetes_hospital_data.html).
 
@@ -58,31 +62,60 @@ We ran experiments on [Diabetes 130-US Hospitals](https://archive.ics.uci.edu/da
 
 †EO gap exceeds γ=0.10.
 
+#### Learning Curves
+
+![Diabetes Learning Curves](supplementary/fig_diabetes_learning_curves.png)
+
+*Figure S1: Learning curves on Diabetes 130-Hospitals (k=3, p₊=0.11). Left: Test accuracy vs label budget. Right: EO gap vs label budget. FairStratified (red) achieves the lowest EO gap while maintaining competitive accuracy. The γ=0.10 threshold is shown as a dotted yellow line.*
+
+#### Fairness Hierarchy Verification
+
+![Diabetes Hierarchy](supplementary/fig_diabetes_hierarchy.png)
+
+*Figure S2: Fairness complexity hierarchy on Diabetes 130-Hospitals. DP verification is label-free; EO incurs ~1.2× the accuracy baseline; EqOdds incurs ~1.3×. The hierarchy DP < EO < EqOdds is confirmed.*
+
 **Key Findings:**
 - FairStratified achieves **34% label savings**, consistent with 36–39% on census benchmarks
 - The lower p₊ (0.11 vs 0.24–0.45) increases Phase 1 cost as predicted by the k/(γ²p₊) scaling
 - Accuracy ordering and EO ordering match all three original datasets
 - Fairness tax (Unconstrained − FairStratified accuracy) is 1.0 pp, consistent with the trend: k=9 → 2.4pp, k=6 → 1.9pp, k=5 → 1.3pp, k=3 → 1.0pp
 
-### MLP Pilot Experiment
+---
+
+### 🧠 NEW: MLP Pilot Experiment
+
+[![New Experiment](https://img.shields.io/badge/🆕_New_Experiment-Non--Linear_Models-blue)](supplementary/mlp_pilot_results.json)
 
 We compare logistic regression (LR) with a 1-hidden-layer MLP (64 neurons, ReLU) on Folktables to verify that scaling laws generalize beyond linear classifiers.
 
+![MLP Pilot Results](supplementary/fig_mlp_pilot.png)
+
+*Figure S3: LR vs MLP comparison. (a) Both models exhibit identical linear scaling with k, matching theory. (b) MLP achieves slightly higher accuracy at large budgets. (c) Both models cross the γ=0.10 EO threshold at similar budget levels, confirming the scaling law is model-independent.*
+
 **Key Finding:** The MLP exhibits the same k/(γ²p₊) scaling as logistic regression. The Ω(k/(γ²p₊)) law and DP < EO ≤ EqOdds hierarchy hold for both model classes, confirming our information-theoretic lower bounds are not artifacts of linear models.
 
-### Visualization
+---
 
-![Diabetes 130-Hospitals Results](supplementary/fig_diabetes.png)
+### 📊 Combined Overview
 
-*Figure: Learning curves on Diabetes 130-Hospitals (k=3, p₊=0.11). Left: Test accuracy vs label budget. Right: EO gap vs label budget. FairStratified achieves the lowest EO gap while maintaining competitive accuracy.*
+![Combined Results](supplementary/fig_diabetes.png)
+
+*Figure S4: Four-panel summary of all supplementary experiments. (a–b) Diabetes 130-Hospitals learning curves; (c) LR vs MLP scaling on Folktables; (d) Fairness hierarchy on Diabetes.*
+
+---
 
 ### Download Supplementary Data
 
 The complete experimental data is available in the [`supplementary/`](supplementary/) folder:
 
-- [`diabetes_results.json`](supplementary/diabetes_results.json) — Raw experimental data (4 methods × 10 seeds)
-- [`fig_diabetes.pdf`](supplementary/fig_diabetes.pdf) — Learning curve visualization
-- [`mlp_pilot_results.json`](supplementary/mlp_pilot_results.json) — MLP vs LR comparison on Folktables
+| File | Description |
+|------|-------------|
+| [`diabetes_results.json`](supplementary/diabetes_results.json) | Raw experimental data (4 methods × 10 seeds) |
+| [`fig_diabetes_learning_curves.pdf`](supplementary/fig_diabetes_learning_curves.pdf) | Learning curve visualization (Fig S1) |
+| [`fig_diabetes_hierarchy.pdf`](supplementary/fig_diabetes_hierarchy.pdf) | Fairness hierarchy visualization (Fig S2) |
+| [`fig_mlp_pilot.pdf`](supplementary/fig_mlp_pilot.pdf) | MLP pilot visualization (Fig S3) |
+| [`fig_diabetes.pdf`](supplementary/fig_diabetes.pdf) | Combined 4-panel visualization (Fig S4) |
+| [`mlp_pilot_results.json`](supplementary/mlp_pilot_results.json) | MLP vs LR comparison on Folktables |
 
 ---
 
@@ -162,9 +195,15 @@ pip install -r requirements.txt
 │   └── run_all.py            # Run all experiments
 ├── supplementary/            # 🆕 Extended experimental results
 │   ├── diabetes_results.json
+│   ├── mlp_pilot_results.json
 │   ├── fig_diabetes.pdf
 │   ├── fig_diabetes.png
-│   └── mlp_pilot_results.json
+│   ├── fig_diabetes_learning_curves.pdf
+│   ├── fig_diabetes_learning_curves.png
+│   ├── fig_diabetes_hierarchy.pdf
+│   ├── fig_diabetes_hierarchy.png
+│   ├── fig_mlp_pilot.pdf
+│   └── fig_mlp_pilot.png
 └── tests/
     ├── test_metrics.py       # Unit tests for fairness metrics
     ├── test_data.py          # Unit tests for data loaders
