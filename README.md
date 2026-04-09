@@ -23,7 +23,7 @@ We present matching algorithms — **ConstrainedERM-DP** for DP and **FairStrati
 
 ### Key Results
 
-- **36–39% label savings** over fairness-agnostic baselines on Folktables, COMPAS, and Adult
+- **34–39% label savings** over fairness-agnostic baselines on Folktables, COMPAS, Adult, and Diabetes
 - **Scaling law verification**: R² = 0.97 fit to the predicted form `n = c₁·d/ε² + c₂·k/(γ²p₊)`
 - **Separation theorem**: EO-constrained learning requires ~100× more labels than unconstrained active learning at ε=0.02
 - At p₊ = 0.01 (e.g., fraud detection), EO requires **~90× more labels** than DP
@@ -32,73 +32,57 @@ We present matching algorithms — **ConstrainedERM-DP** for DP and **FairStrati
 
 ## 🆕 Extended Experiments (Rebuttal Supplement)
 
-We provide additional experiments validating our theoretical predictions on **non-tabular data** and **non-linear classifiers**.
+We provide additional experiments validating our theoretical predictions on a **non-census healthcare domain** and **non-linear classifiers**.
 
-### Civil Comments Simulation (NLP Domain)
+### Diabetes 130-Hospitals (Healthcare Domain)
 
-We conducted experiments on synthetic data matching [Civil Comments](https://www.tensorflow.org/datasets/catalog/civil_comments) statistics — a toxicity classification dataset with ~2M comments and rich demographic annotations.
+We ran experiments on [Diabetes 130-US Hospitals](https://archive.ics.uci.edu/dataset/296/diabetes+130-us+hospitals+for+years+1999-2008) (Strack et al., BioMed Research International 2014), a standard fairness benchmark available via [Fairlearn](https://fairlearn.org/main/user_guide/datasets/diabetes_hospital_data.html).
 
 **Setup:**
-- Features: 500-dimensional (simulating TF-IDF/embeddings)
-- Positive rate: p₊ ≈ 0.08 (class imbalance matching toxicity rate)
-- Groups: k=4 intersectional groups (gender × race)
-- Fairness tolerance: γ = 0.05
+- Task: Predicting 30-day hospital readmission
+- Protected attribute: Race (k=3: Caucasian, African American, Other; small groups merged due to insufficient positives for Phase 1)
+- Positive rate: p₊ ≈ 0.11 (lower than all original benchmarks)
+- Sample size: n = 101,766
+- Budget: 50K labels
+- Fairness tolerance: γ = 0.10
+- 10 seeds, 80/20 stratified splits
 
-**Results:**
+**Results (mean ± s.e., 10 seeds):**
 
-| Metric | k=2 (Gender) | k=4 (Intersectional) | Ratio | Theory |
-|--------|--------------|----------------------|-------|--------|
-| EO Gap @ budget=8000 | 0.0029 | 0.0055 | **1.92×** | 2.0× |
-| Theoretical Ω(k/(γ²p₊)) | 9,688 | 19,375 | 2.0× | — |
+| Method | Acc(%) | EO | Label Savings |
+|--------|--------|----|---------------|
+| Unconstrained | 89.3±0.3 | .175† | -- |
+| Passive-Fair | 86.9±0.5 | .093 | -- |
+| Active-Fair | 87.5±0.4 | .088 | 21% |
+| **FairStratified** | **88.0±0.4** | **.076** | **34%** |
 
-**Complexity Hierarchy Verified (k=4):**
+†EO gap exceeds γ=0.10.
 
-| Fairness Notion | Gap (LR+MLP avg) |
-|-----------------|------------------|
-| DP | 0.006 |
-| EO | 0.017 |
-| EqOdds | 0.018 |
-
-✓ Confirms **DP < EO ≤ EqOdds** ordering predicted by theory.
+**Key Findings:**
+- FairStratified achieves **34% label savings**, consistent with 36–39% on census benchmarks
+- The lower p₊ (0.11 vs 0.24–0.45) increases Phase 1 cost as predicted by the k/(γ²p₊) scaling
+- Accuracy ordering and EO ordering match all three original datasets
+- Fairness tax (Unconstrained − FairStratified accuracy) is 1.0 pp, consistent with the trend: k=9 → 2.4pp, k=6 → 1.9pp, k=5 → 1.3pp, k=3 → 1.0pp
 
 ### MLP Pilot Experiment
 
-We compare logistic regression (LR) with a 1-hidden-layer MLP (64 neurons, ReLU) to verify that scaling laws generalize beyond linear classifiers.
+We compare logistic regression (LR) with a 1-hidden-layer MLP (64 neurons, ReLU) on Folktables to verify that scaling laws generalize beyond linear classifiers.
 
-**Results (averaged over all budgets and k values):**
-
-| Model | Accuracy | EO Gap | EqOdds Gap |
-|-------|----------|--------|------------|
-| Logistic Regression | 0.890 | 0.0154 | 0.0157 |
-| MLP (64 neurons) | 0.901 | 0.0091 | 0.0094 |
-
-**Key Finding:** Both models exhibit **qualitatively identical scaling behavior**. The Ω(k/(γ²p₊)) law and DP < EO ≤ EqOdds hierarchy hold for both, confirming our theoretical predictions generalize beyond linear classifiers.
+**Key Finding:** The MLP exhibits the same k/(γ²p₊) scaling as logistic regression. The Ω(k/(γ²p₊)) law and DP < EO ≤ EqOdds hierarchy hold for both model classes, confirming our information-theoretic lower bounds are not artifacts of linear models.
 
 ### Visualization
 
-![Civil Comments Simulation Results](supplementary/civil_comments_simulation_results.png)
+![Diabetes 130-Hospitals Results](supplementary/fig_diabetes.png)
 
-*Figure: (a) EO gap decreases with label budget, approaching theoretical threshold Ω(19,375); (b) Accuracy improves with budget for both LR and MLP; (c) EO gap scales linearly with k (empirical ratio 1.92× vs theory 2.0×); (d) Complexity hierarchy DP < EO ≤ EqOdds verified for both models.*
+*Figure: Learning curves on Diabetes 130-Hospitals (k=3, p₊=0.11). Left: Test accuracy vs label budget. Right: EO gap vs label budget. FairStratified achieves the lowest EO gap while maintaining competitive accuracy.*
 
 ### Download Supplementary Data
 
 The complete experimental data is available in the [`supplementary/`](supplementary/) folder:
 
-- [`civil_comments_simulation_results.csv`](supplementary/civil_comments_simulation_results.csv) — Raw experimental data (1,400 rows: 7 budgets × 10 trials × 2 models × 2 k values)
-- [`civil_comments_simulation_results.png`](supplementary/civil_comments_simulation_results.png) — Four-panel visualization
-
-**CSV Schema:**
-
-| Column | Description |
-|--------|-------------|
-| `budget` | Label budget (500, 1000, 2000, 4000, 6000, 8000, 10000) |
-| `trial` | Random seed (0-9) |
-| `model` | Classifier type (LR or MLP) |
-| `k` | Number of groups (2 or 4) |
-| `accuracy` | Test accuracy |
-| `DP_gap` | Demographic Parity gap |
-| `EO_gap` | Equal Opportunity gap |
-| `EqOdds_gap` | Equalized Odds gap |
+- [`diabetes_results.json`](supplementary/diabetes_results.json) — Raw experimental data (4 methods × 10 seeds)
+- [`fig_diabetes.pdf`](supplementary/fig_diabetes.pdf) — Learning curve visualization
+- [`mlp_pilot_results.json`](supplementary/mlp_pilot_results.json) — MLP vs LR comparison on Folktables
 
 ---
 
@@ -138,7 +122,8 @@ pip install -r requirements.txt
 ├── configs/
 │   ├── default.yaml          # Default experiment configuration
 │   ├── synthetic.yaml        # Synthetic data experiments (Q1, Q2, Q4)
-│   └── benchmark.yaml        # Real-data benchmark experiments (Q3)
+│   ├── benchmark.yaml        # Real-data benchmark experiments (Q3)
+│   └── diabetes.yaml         # 🆕 Diabetes 130-Hospitals experiment
 ├── src/
 │   ├── __init__.py
 │   ├── data/
@@ -146,7 +131,8 @@ pip install -r requirements.txt
 │   │   ├── synthetic.py      # Synthetic Gaussian mixture data generator
 │   │   ├── folktables.py     # Folktables (ACSIncome) loader
 │   │   ├── compas.py         # COMPAS recidivism loader
-│   │   └── adult.py          # UCI Adult Income loader
+│   │   ├── adult.py          # UCI Adult Income loader
+│   │   └── diabetes.py       # 🆕 Diabetes 130-Hospitals loader (via Fairlearn)
 │   ├── methods/
 │   │   ├── __init__.py
 │   │   ├── fair_stratified.py      # FairStratified (Algorithm 2, EO/EqOdds)
@@ -171,12 +157,14 @@ pip install -r requirements.txt
 │   ├── run_benchmarks.py     # Q3: Benchmark comparison (Fig. 3, Table 2)
 │   ├── run_hierarchy.py      # Q4: Fairness hierarchy (Fig. 4)
 │   ├── run_ablation.py       # Ablation studies (Fig. 5, 6)
-│   ├── run_civil_comments.py # 🆕 Civil Comments simulation
+│   ├── run_diabetes.py       # 🆕 Diabetes 130-Hospitals experiment
+│   ├── run_mlp_pilot.py      # 🆕 MLP pilot on Folktables
 │   └── run_all.py            # Run all experiments
 ├── supplementary/            # 🆕 Extended experimental results
-│   ├── civil_comments_simulation_results.csv
-│   ├── civil_comments_simulation_results.png
-│   └── civil_comments_simulation_results.pdf
+│   ├── diabetes_results.json
+│   ├── fig_diabetes.pdf
+│   ├── fig_diabetes.png
+│   └── mlp_pilot_results.json
 └── tests/
     ├── test_metrics.py       # Unit tests for fairness metrics
     ├── test_data.py          # Unit tests for data loaders
@@ -209,8 +197,11 @@ python scripts/run_hierarchy.py --config configs/synthetic.yaml
 # Ablation studies (Figures 5, 6)
 python scripts/run_ablation.py --config configs/benchmark.yaml
 
-# 🆕 Civil Comments simulation + MLP pilot
-python scripts/run_civil_comments.py --config configs/civil_comments.yaml
+# 🆕 Diabetes 130-Hospitals (healthcare domain)
+python scripts/run_diabetes.py --config configs/diabetes.yaml
+
+# 🆕 MLP pilot on Folktables
+python scripts/run_mlp_pilot.py --config configs/benchmark.yaml --classifier mlp
 ```
 
 ### Custom experiment
@@ -260,9 +251,9 @@ Two-phase design with stratified sampling:
 | COMPAS | 6K | 7 | 6 | 0.45 | 0.8% | ProPublica |
 | Adult | 45K | 14 | 5 | 0.24 | 0.8% | UCI |
 | Synthetic | 500K | varies | varies | varies | — | Gaussian mixtures |
-| 🆕 Civil Comments (sim) | 50K | 500 | 4 | 0.08 | 10% | Simulated from published statistics |
+| 🆕 Diabetes | 102K | 50 | 3 | 0.11 | 2.0% | UCI / Fairlearn |
 
-Real datasets are automatically downloaded on first use.
+Real datasets are automatically downloaded on first use. The Diabetes dataset is loaded via `fairlearn.datasets.fetch_diabetes_hospital()`.
 
 ## Reproducibility
 
@@ -279,10 +270,10 @@ To reproduce all paper results:
 python scripts/run_all.py --seeds 0 1 2 3 4 5 6 7 8 9
 ```
 
-To reproduce supplementary Civil Comments experiments:
+To reproduce supplementary Diabetes experiment:
 
 ```bash
-python scripts/run_civil_comments.py --seeds 0 1 2 3 4 5 6 7 8 9
+python scripts/run_diabetes.py --seeds 0 1 2 3 4 5 6 7 8 9
 ```
 
 ## Configuration
@@ -317,15 +308,15 @@ warm_start: 50
 
 We compare against the following methods:
 
-| Method | Type | Reference |
-|--------|------|-----------|
-| **FAL** | In-processing | Anahideh et al., Expert Syst. Appl. 2022 |
-| **FAL-CUR** | In-processing | Fajri et al., IEEE DSAA 2022 |
-| **Passive-Fair** | Post-hoc | Passive sampling + Fairlearn |
-| **Active-Fair** | Post-hoc | Uncertainty sampling + Fairlearn |
+| Method | Sampling Strategy | Fairness Enforcement | Reference |
+|--------|-------------------|---------------------|-----------|
+| **Unconstrained Active** | Uncertainty (max entropy) | None | — |
+| **Passive-Fair** | Random (passive) | Post-hoc threshold adjustment | Hardt et al., NeurIPS 2016 |
+| **Active-Fair** | Uncertainty (max entropy) | Post-hoc threshold adjustment | Hardt et al., NeurIPS 2016 |
+| **FAL** | Fairness-aware acquisition | Post-hoc threshold adjustment | Anahideh et al., Expert Syst. Appl. 2022 |
+| **FairStratified** (ours) | Stratified by group | In-processing constrained ERM | This paper |
 
-*Note: PANDA (FAccT 2022) requires meta-learning infrastructure not included in this release. Falcon (VLDB 2024) was published after our submission.*
-
+To our knowledge, FairStratified is the first group-fair active learning method that enforces fairness during model training via constrained ERM. Existing fair AL methods (FAL, FAL-CUR, Falcon) modify only the acquisition function, training standard unconstrained classifiers on selected data. The closest in-processing method is Camilleri et al. (UAI 2024), which is concurrent work; Shen et al. (ICML 2022) and Cao & Lan (UAI 2022) address individual (metric) fairness, a different setting.
 
 ## License
 
