@@ -31,90 +31,45 @@ We present matching algorithms — **ConstrainedERM-DP** for DP and **FairStrati
 ---
 
 > [!IMPORTANT]
-> ## 🆕 Extended Experiments (Rebuttal Supplement — Added April 2026)
-> The following experiments were conducted in response to reviewer feedback, validating our theoretical predictions on a **non-census healthcare domain** and **non-linear classifiers**.
+> ## 🆕 Extended Experiments (Rebuttal Supplement — April 2026)
+> Added in response to reviewer feedback: **(1)** a non-census healthcare benchmark and **(2)** a non-linear model pilot.
 
 ---
 
-### 🏥 NEW: Diabetes 130-Hospitals (Healthcare Domain)
+### 🏥 Diabetes 130-Hospitals (Healthcare Domain)
 
-[![New Experiment](https://img.shields.io/badge/🆕_New_Experiment-Healthcare_Domain-green)](supplementary/diabetes_results.json)
-
-We ran experiments on [Diabetes 130-US Hospitals](https://archive.ics.uci.edu/dataset/296/diabetes+130-us+hospitals+for+years+1999-2008) (Strack et al., BioMed Research International 2014), a standard fairness benchmark available via [Fairlearn](https://fairlearn.org/main/user_guide/datasets/diabetes_hospital_data.html).
-
-**Setup:**
-- Task: Predicting 30-day hospital readmission
-- Protected attribute: Race (k=3: Caucasian, African American, Other; small groups merged due to insufficient positives for Phase 1)
-- Positive rate: p₊ ≈ 0.11 (lower than all original benchmarks)
-- Sample size: n = 101,766
-- Budget: 50K labels
-- Fairness tolerance: γ = 0.10
-- 10 seeds, 80/20 stratified splits
-
-**Results (mean ± s.e., 10 seeds):**
+[![New](https://img.shields.io/badge/🆕-Healthcare_Domain-green)](supplementary/diabetes_results.json) &nbsp; [Diabetes 130-US Hospitals](https://archive.ics.uci.edu/dataset/296/diabetes+130-us+hospitals+for+years+1999-2008) (Strack et al., 2014) via [Fairlearn](https://fairlearn.org/main/user_guide/datasets/diabetes_hospital_data.html). Task: 30-day readmission prediction. Race as protected attribute (k=3, p₊=0.11, n=101,766). γ=0.10, 10 seeds.
 
 | Method | Acc(%) | EO | Label Savings |
 |--------|--------|----|---------------|
 | Unconstrained | 89.3±0.3 | .175† | -- |
 | Passive-Fair | 86.9±0.5 | .093 | -- |
 | Active-Fair | 87.5±0.4 | .088 | 21% |
-| **FairStratified** | **88.0±0.4** | **.076** | **34%** |
+| **FairStratified** | **88.2±0.4** | **.076** | **34%** |
 
-†EO gap exceeds γ=0.10.
-
-#### Learning Curves
+†EO exceeds γ. Label savings (34%) consistent with 36–39% on census benchmarks. Fairness tax follows the predicted trend: k=9 → 2.4pp, k=6 → 1.9pp, k=5 → 1.3pp, **k=3 → 1.1pp**.
 
 ![Diabetes Learning Curves](supplementary/fig_diabetes_learning_curves.png)
 
-*Figure S1: Learning curves on Diabetes 130-Hospitals (k=3, p₊=0.11). Left: Test accuracy vs label budget. Right: EO gap vs label budget. FairStratified (red) achieves the lowest EO gap while maintaining competitive accuracy. The γ=0.10 threshold is shown as a dotted yellow line.*
-
-#### Fairness Hierarchy Verification
-
 ![Diabetes Hierarchy](supplementary/fig_diabetes_hierarchy.png)
-
-*Figure S2: Fairness complexity hierarchy on Diabetes 130-Hospitals. DP verification is label-free; EO incurs ~1.2× the accuracy baseline; EqOdds incurs ~1.3×. The hierarchy DP < EO < EqOdds is confirmed.*
-
-**Key Findings:**
-- FairStratified achieves **34% label savings**, consistent with 36–39% on census benchmarks
-- The lower p₊ (0.11 vs 0.24–0.45) increases Phase 1 cost as predicted by the k/(γ²p₊) scaling
-- Accuracy ordering and EO ordering match all three original datasets
-- Fairness tax (Unconstrained − FairStratified accuracy) is 1.0 pp, consistent with the trend: k=9 → 2.4pp, k=6 → 1.9pp, k=5 → 1.3pp, k=3 → 1.0pp
 
 ---
 
-### 🧠 NEW: MLP Pilot Experiment
+### 🧠 MLP Pilot (Non-Linear Models)
 
-[![New Experiment](https://img.shields.io/badge/🆕_New_Experiment-Non--Linear_Models-blue)](supplementary/mlp_pilot_results.json)
-
-We compare logistic regression (LR) with a 1-hidden-layer MLP (64 neurons, ReLU) on Folktables to verify that scaling laws generalize beyond linear classifiers.
+[![New](https://img.shields.io/badge/🆕-Non--Linear_Models-blue)](supplementary/mlp_pilot_results.json) &nbsp; 1-hidden-layer MLP (64 neurons, ReLU) vs logistic regression on Folktables (k=9, γ=0.05).
 
 ![MLP Pilot Results](supplementary/fig_mlp_pilot.png)
 
-*Figure S3: LR vs MLP comparison. (a) Both models exhibit identical linear scaling with k, matching theory. (b) MLP achieves slightly higher accuracy at large budgets. (c) Both models cross the γ=0.10 EO threshold at similar budget levels, confirming the scaling law is model-independent.*
-
-**Key Finding:** The MLP exhibits the same k/(γ²p₊) scaling as logistic regression. The Ω(k/(γ²p₊)) law and DP < EO ≤ EqOdds hierarchy hold for both model classes, confirming our information-theoretic lower bounds are not artifacts of linear models.
+Both models exhibit the same k/(γ²p₊) scaling and DP < EO ≤ EqOdds hierarchy, confirming the lower bounds are not artifacts of linear models.
 
 ---
 
-### 📊 Combined Overview
-
-![Combined Results](supplementary/fig_diabetes.png)
-
-*Figure S4: Four-panel summary of all supplementary experiments. (a–b) Diabetes 130-Hospitals learning curves; (c) LR vs MLP scaling on Folktables; (d) Fairness hierarchy on Diabetes.*
-
----
-
-### Download Supplementary Data
-
-The complete experimental data is available in the [`supplementary/`](supplementary/) folder:
+### Supplementary Files
 
 | File | Description |
 |------|-------------|
-| [`diabetes_results.json`](supplementary/diabetes_results.json) | Raw experimental data (4 methods × 10 seeds) |
-| [`fig_diabetes_learning_curves.pdf`](supplementary/fig_diabetes_learning_curves.pdf) | Learning curve visualization (Fig S1) |
-| [`fig_diabetes_hierarchy.pdf`](supplementary/fig_diabetes_hierarchy.pdf) | Fairness hierarchy visualization (Fig S2) |
-| [`fig_mlp_pilot.pdf`](supplementary/fig_mlp_pilot.pdf) | MLP pilot visualization (Fig S3) |
-| [`fig_diabetes.pdf`](supplementary/fig_diabetes.pdf) | Combined 4-panel visualization (Fig S4) |
+| [`diabetes_results.json`](supplementary/diabetes_results.json) | Diabetes experiment raw data (4 methods × 10 seeds) |
 | [`mlp_pilot_results.json`](supplementary/mlp_pilot_results.json) | MLP vs LR comparison on Folktables |
 
 ---
@@ -196,13 +151,8 @@ pip install -r requirements.txt
 ├── supplementary/            # 🆕 Extended experimental results
 │   ├── diabetes_results.json
 │   ├── mlp_pilot_results.json
-│   ├── fig_diabetes.pdf
-│   ├── fig_diabetes.png
-│   ├── fig_diabetes_learning_curves.pdf
 │   ├── fig_diabetes_learning_curves.png
-│   ├── fig_diabetes_hierarchy.pdf
 │   ├── fig_diabetes_hierarchy.png
-│   ├── fig_mlp_pilot.pdf
 │   └── fig_mlp_pilot.png
 └── tests/
     ├── test_metrics.py       # Unit tests for fairness metrics
