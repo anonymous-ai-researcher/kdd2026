@@ -34,6 +34,10 @@ We present matching algorithms — **ConstrainedERM-DP** for DP and **FairStrati
 > ## 🆕 Extended Experiments (Rebuttal Supplement — April 2026)
 > Added in response to reviewer feedback: **(1)** a non-census healthcare benchmark and **(2)** a non-linear model pilot.
 
+> [!NOTE]
+> ## 📄 Updated Manuscript: SUM-type Lower Bound (April 2026)
+> [![Updated](https://img.shields.io/badge/📄-Updated_Manuscript-8A2BE2)](UPDATED-KDD2026_ID4143.pdf) &nbsp; **[`UPDATED-KDD2026_ID4143.pdf`](UPDATED-KDD2026_ID4143.pdf)** has been added to this repository. It contains a new **Theorem 4** (SUM-type Lower Bound under Heterogeneous Rates) with complete proof in Appendix A.8, closing the MAX-vs-SUM gap noted in the original Remark 2. All additions are marked in <span style="color:green">**green**</span>. This was developed in academic dialogue with Reviewer 5Ucc and is included with PC Chair permission.
+
 ---
 
 ### 🏥 Diabetes 130-Hospitals (Healthcare Domain)
@@ -69,6 +73,7 @@ Both models exhibit the same k/(γ²p₊) scaling and DP < EO ≤ EqOdds hierarc
 
 | File | Description |
 |------|-------------|
+| [![Updated](https://img.shields.io/badge/📄-New-8A2BE2) `UPDATED-KDD2026_ID4143.pdf`](UPDATED-KDD2026_ID4143.pdf) | Updated manuscript with Theorem 4 (SUM-type Lower Bound) and complete proof (Appendix A.8) |
 | [`diabetes_results.json`](supplementary/diabetes_results.json) | Diabetes experiment raw data (4 methods × 10 seeds) |
 | [`mlp_pilot_results.json`](supplementary/mlp_pilot_results.json) | MLP vs LR comparison on Folktables |
 
