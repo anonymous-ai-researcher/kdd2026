@@ -3,6 +3,10 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+> [!NOTE]
+> ## 📄 Updated Manuscript (April 2026)
+> [![Updated](https://img.shields.io/badge/📄-Updated_Manuscript-8A2BE2)](UPDATED-KDD2026_ID4143.pdf) &nbsp; **[`UPDATED-KDD2026_ID4143.pdf`](UPDATED-KDD2026_ID4143.pdf)** has been added to this repository. It contains a new **Theorem 4** (SUM-type Lower Bound under Heterogeneous Rates) with complete proof in Appendix A.8, closing the MAX-vs-SUM gap noted in the original Remark 2. All additions are marked in <span style="color:green">**green**</span>. This was developed in academic dialogue with Reviewer 5Ucc and is included with PC Chair permission.
+
 This repository provides the official implementation for the paper:
 
 > **The Price of Fairness in Active Learning: Fundamental Limits and Optimal Label Acquisition**
@@ -33,10 +37,6 @@ We present matching algorithms — **ConstrainedERM-DP** for DP and **FairStrati
 > [!IMPORTANT]
 > ## 🆕 Extended Experiments (Rebuttal Supplement — April 2026)
 > Added in response to reviewer feedback: **(1)** a non-census healthcare benchmark and **(2)** a non-linear model pilot.
-
-> [!NOTE]
-> ## 📄 Updated Manuscript: SUM-type Lower Bound (April 2026)
-> [![Updated](https://img.shields.io/badge/📄-Updated_Manuscript-8A2BE2)](UPDATED-KDD2026_ID4143.pdf) &nbsp; **[`UPDATED-KDD2026_ID4143.pdf`](UPDATED-KDD2026_ID4143.pdf)** has been added to this repository. It contains a new **Theorem 4** (SUM-type Lower Bound under Heterogeneous Rates) with complete proof in Appendix A.8, closing the MAX-vs-SUM gap noted in the original Remark 2. All additions are marked in <span style="color:green">**green**</span>. This was developed in academic dialogue with Reviewer 5Ucc and is included with PC Chair permission.
 
 ---
 
